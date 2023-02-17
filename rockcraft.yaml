@@ -1,0 +1,31 @@
+name: omec-5g-smf
+summary: OMEC SD-CORE 5G SMF
+description: OMEC SD-CORE 5G SMF
+version: "master"
+license: Apache-2.0
+base: bare
+build-base: ubuntu:22.04
+platforms:
+  amd64:
+
+cmd: ["smf", "-smfcfg", "etc/smfcfg.conf", "-uerouting", "etc/uerouting.conf"]
+
+parts:
+  smf:
+    plugin: go
+    source: https://github.com/omec-project/smf.git
+    source-type: git
+    source-branch: master
+    build-snaps:
+      - go
+    stage-packages:
+      - bash  # Required because of this bug: https://github.com/canonical/rockcraft/issues/187
+    organize:
+      bin/cmd: bin/smf
+
+  config:
+    plugin: dump
+    source: files
+    organize:
+      smfcfg.yaml: etc/smfcfg.yaml
+      uerouting.conf: etc/uerouting.conf
